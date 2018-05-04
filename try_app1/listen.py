@@ -1,6 +1,26 @@
 import select
 import psycopg2
 import psycopg2.extensions
+sql = """
+
+CREATE FUNCTION notify_trigger() RETURNS trigger AS $$
+
+DECLARE
+
+BEGIN
+ -- TG_TABLE_NAME is the name of the table who's trigger called this function
+ -- TG_OP is the operation that triggered this function: INSERT, UPDATE or DELETE.
+ execute 'NOTIFY ' || TG_TABLE_NAME || '_' || TG_OP;
+ PERFORM pg_notify('test','high');
+ return new;
+END;
+
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER students_triggers BEFORE insert or update or delete on students execute procedure notify_trigger();
+
+"""
+
 dbname = 'trial1'
 host = 'localhost'
 user = 'postgres'
@@ -11,6 +31,7 @@ conn = psycopg2.connect(DSN)
 conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
 curs = conn.cursor()
+curs.execute(sql)
 curs.execute("LISTEN test;")
 
 print ("Waiting for notifications on channel 'test'")
