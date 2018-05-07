@@ -1,4 +1,4 @@
-sql = """
+
 CREATE LANGUAGE plpgsql;
 
 CREATE FUNCTION notify_trigger() RETURNS trigger AS $$
@@ -17,5 +17,3 @@ $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER students_trigger BEFORE insert or update or delete on students execute procedure notify_trigger();
 CREATE TRIGGER marks_trigger BEFORE insert or update or delete on marks execute procedure notify_trigger();
-
-"""

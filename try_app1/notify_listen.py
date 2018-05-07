@@ -5,11 +5,10 @@ from eventlet import wsgi
 from eventlet import websocket
 from eventlet.hubs import trampoline
 
-dbname = 'trydb'
+dbname = 'trial1'
 host = 'localhost'
 user = 'postgres'
-password = 'megha123'
-
+password = 'postgres123'
 dsn = 'dbname=%s host=%s user=%s password=%s' % (dbname, host, user, password)
 
 def dblisten(q):
