@@ -1,3 +1,7 @@
 from django.shortcuts import render
+from try_app1.models import Marks
+from django.db.models import Avg
 
-# Create your views here.
+def main(request):
+    eng_avg = Marks.objects.all().aggregate(Avg('english'))['english__avg']
+    return render(request,'home.html',{'eng_avg':eng_avg})
