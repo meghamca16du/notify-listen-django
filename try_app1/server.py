@@ -4,6 +4,9 @@ import eventlet
 from eventlet import wsgi
 from eventlet import websocket
 from eventlet.hubs import trampoline
+from datetime import datetime, date
+from try_app1.views import *
+from django.http import HttpResponse
 
 
 dbname = 'trial1'
@@ -41,6 +44,11 @@ def create_trigger():
     curs = conn.cursor()
     curs.execute(sql)
 
+def dofunction():
+    docalc()
+    print('            okay               \n')
+    return HttpResponse('home.html')
+
 def dblisten(q):
     """
     Open a db connection and add notifications to *q*.
@@ -49,16 +57,27 @@ def dblisten(q):
     cnn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     cur = cnn.cursor()
     cur.execute("LISTEN test;")
+    #start_time = datetime.now()
+    #StartTime = start_time.minute
     while 1:
-        print('inside whilee \n')
-        trampoline(cnn, read=True)
-        print('3 \n')
+        print('inside while loop 1 \n')
+        #end_time = datetime.now()
+        #EndTime = end_time.minute
+        #difference = EndTime - StartTime
+        #if (difference >= 1 ):
+        #    dofunction()
+        try:
+            trampoline(cnn, read=True,timeout=30)
+        except eventlet.timeout.Timeout:
+            dofunction()
+       
+        print('after trampoline \n')
         cnn.poll()
-        print('4 \n')
+        print('aften poll \n')
         while cnn.notifies:
-            print('inside cnn.notifies  ','cnn.notifies',' \n')
+            print('while loop 2 \n')
             n = cnn.notifies.pop()
-            print('n   ',n,'   done\n')
+            print('after pop \n')
             q.put(n)
 
 @websocket.WebSocketWSGI
@@ -72,25 +91,25 @@ def handle(ws):
     print('2 \n')
     while 1:
         n = q.get()
+        print('in handle function \n')
         print(n)
         #ws.send(n.payload)
 
 def dispatch(environ, start_response):
     if environ['PATH_INFO'] == '/test':
-        print("3")
         return handle(environ, start_response)
     else:
         start_response('200 OK',
             [('content-type', 'text/html')])
         #return [templating.load_page('content': 'The Content Of Page One',"eventlet1.html"),]
-        return ['home.html']
+        return [page]
 
 
 def run():
     listener = eventlet.listen(('127.0.0.1', 8080))      # returns - The listening green socket object.
-    print("1") 
+    print("5 \n") 
     wsgi.server(listener, dispatch)                      # launches wsgi server which runs in a loop untill server exits
-    print("2")
+    print("6 \n")
 
 
 page = """
