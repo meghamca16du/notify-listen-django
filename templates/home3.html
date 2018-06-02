@@ -1,31 +1,20 @@
-{% load static %}
-<!doctype html>
 <html>
-  <head><title>pushdemo</title>
+  <head><title>Testing Notify/Listen</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
     <style type="text/css">
       .bar {width: 20px; height: 20px;}
     </style>
     <script>
       window.onload = function() {
-        ws = new WebSocket();
-        ws.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        ws.connect("ws://localhost:8000")
-        //ws = new WebSocket("ws://localhost:8000/home/");
+        ws = new WebSocket("ws://localhost:8000/tester");       
         ws.onmessage = function(msg) {
-          
-          document.getElementById("avg").innerHTML = msg.data;
-
-          bar = $('#' + msg.data);
-          bar.width(bar.width() + 10);
-          document.write(hello);
-          document.write('hellooo', 'msg.data ')
+          avg=JSON.parse(msg.data);
+          document.querySelector("#id1").innerHTML = avg.eng.toString();
         }
       }
     </script>
   </head>
   <body>
-
     <div style="width: 400px;">
       <div id="red" class="bar"
           style="background-color: red;">&nbsp;</div>
@@ -33,12 +22,9 @@
           style="background-color: green;">&nbsp;</div>
       <div id="blue" class="bar"
           style="background-color: blue;">&nbsp;</div>
-
-          {% for val in mydict %}
-          {{val}}
-          {% endfor %}
-      <div id="avg"> </div>
-
+      <div id="id1"> 
+        hey
+      </div>
     </div>
   </body>
 </html>

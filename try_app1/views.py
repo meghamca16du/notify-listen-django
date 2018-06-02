@@ -8,4 +8,5 @@ def docalc():
 def main(request):
     #eng_avg = Marks.objects.all().aggregate(Avg('english'))['english__avg']
     eng_avg = docalc()
-    return render(request,'home.html',{'eng_avg':eng_avg})
+    mydict = {eng_avg : eng_avg}
+    return render(request,'home.html',{'mydict':mydict})

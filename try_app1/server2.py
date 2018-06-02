@@ -77,13 +77,13 @@ def handle(ws):
         n = q.get()
         print('5')
         print(n)
-        eng_avg=Marks.objects.all().aggregate(Avg('english'))['english__avg']
+        eng_avg = Marks.objects.all().aggregate(Avg('english'))['english__avg']
         print(eng_avg)
         print(n.payload)
         ws.send(n.payload)        #sending message to the browser
 
 def dispatch(environ, start_response):
-    if environ['PATH_INFO'] == '/test':
+    if environ['PATH_INFO'] == '/tester':
         print("3")
         return handle(environ, start_response)
     else:
